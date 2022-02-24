@@ -46,7 +46,7 @@ class Renderer {
 
     // ctx:          canvas context
     drawSlide0(ctx) {
-        
+        this.drawRectangle(object ({x: 50, y: 50}), object ({x: 150, y: 150}), [0, 0, 255, 255], ctx);
     }
 
     // ctx:          canvas context
@@ -69,7 +69,11 @@ class Renderer {
     // color:        array of int [R, G, B, A]
     // ctx:          canvas context
     drawRectangle(left_bottom, right_top, color, ctx) {
-        
+        this.drawLine(left_bottom, object ({x: 50, y: 150}), color, ctx);
+        this.drawLine(object ({x: 50, y: 150}), right_top, color, ctx);
+        this.drawLine(right_top, object ({x: 150, y: 50}), color, ctx);
+        this.drawLine(object ({x: 150, y: 50}), left_bottom, color, ctx);
+        this.showPoints(ctx.flag);
     }
 
     // center:       object ({x: __, y: __})
