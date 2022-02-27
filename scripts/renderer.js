@@ -76,6 +76,11 @@ class Renderer {
         this.drawLine(left_top, right_top, color, ctx);
         this.drawLine(right_top, right_bottom, color, ctx);
         this.drawLine(right_bottom, left_bottom, color, ctx);
+
+        if(this.show_points) {
+            //call showpointdata for all points
+            this.showPointData(left_top, [255, 0, 0, 255], ctx);
+        }
     }
 
     // center:       object ({x: __, y: __})
@@ -107,5 +112,15 @@ class Renderer {
         ctx.moveTo(pt0.x, pt0.y);
         ctx.lineTo(pt1.x, pt1.y);
         ctx.stroke();
+    }
+
+    // pt0:          object ({x: __, y: __})
+    // color:        array of int [R, G, B, A]
+    // ctx:          canvas context
+    showPointData(pt0, color, ctx) {
+        this.drawLine({x: pt0.x-5, y: pt0.y+5}, {x: pt0.x-5, y: pt0.y-5}, color, ctx); // left
+        //this.drawLine(pt0, pt0, color, ctx);
+        //this.drawLine(pt0, pt0, color, ctx);
+        //this.drawLine(pt0, pt0, color, ctx);
     }
 };
