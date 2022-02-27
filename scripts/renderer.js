@@ -30,16 +30,16 @@ class Renderer {
 
         switch (this.slide_idx) {
             case 0:
-                this.drawSlide0(framebuffer);
+                this.drawSlide0(this.ctx);
                 break;
             case 1:
-                this.drawSlide1(framebuffer);
+                this.drawSlide1(this.ctx);
                 break;
             case 2:
-                this.drawSlide2(framebuffer);
+                this.drawSlide2(this.ctx);
                 break;
             case 3:
-                this.drawSlide3(framebuffer);
+                this.drawSlide3(this.ctx);
                 break;
         }
     }
