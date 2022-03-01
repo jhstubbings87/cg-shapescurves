@@ -46,12 +46,12 @@ class Renderer {
 
     // ctx:          canvas context
     drawSlide0(ctx) {
-        this.drawRectangle({x: 50, y: 50}, {x: 150, y: 150}, [0, 0, 255, 255], ctx);
+        this.drawRectangle({x: 200, y: 200}, {x: 500, y: 500}, [0, 0, 255, 255], ctx);
     }
 
     // ctx:          canvas context
     drawSlide1(ctx) {
-        //this.drawCircle({x: 100, y: 100}, 20, [0, 255, 0, 255], ctx);
+        this.drawCircle({x: 350, y: 350}, 50, [0, 255, 0, 255], ctx);
     }
 
     // ctx:          canvas context
@@ -78,8 +78,10 @@ class Renderer {
         this.drawLine(right_bottom, left_bottom, color, ctx);
 
         if(this.show_points) {
-            //call showpointdata for all points
+            this.showPointData(left_bottom, [255, 0, 0, 255], ctx);
             this.showPointData(left_top, [255, 0, 0, 255], ctx);
+            this.showPointData(right_top, [255, 0, 0, 255], ctx);
+            this.showPointData(right_bottom, [255, 0, 0, 255], ctx);
         }
     }
 
@@ -88,7 +90,29 @@ class Renderer {
     // color:        array of int [R, G, B, A]
     // ctx:          canvas context
     drawCircle(center, radius, color, ctx) {
+        let sections = ctx.num_curve_sections;
+        let angle = (2*Math.PI) / sections;
+        let newAngle = 0;
+        let points = [];
+        let X;
+        let Y;
         
+        for(let i = 0; i <= sections; i++) {
+            X = center.x + (radius * Math.cos(newAngle));
+            Y = center.y + (radius * Math.sin(newAngle));
+
+            points[i] = {x: X, y: Y};
+
+            newAngle = newAngle + angle;
+        }
+
+        for(let i = 0; i < points.length-1; i++) {
+            this.drawLine(points[i], points[i+1], color, ctx);
+        }
+/*
+        if(this.showPoints) {
+        }
+        */
     }
 
     // pt0:          object ({x: __, y: __})
@@ -98,7 +122,19 @@ class Renderer {
     // color:        array of int [R, G, B, A]
     // ctx:          canvas context
     drawBezierCurve(pt0, pt1, pt2, pt3, color, ctx) {
-        
+        /*
+        let sections = ctx.num_curve_sections;
+        let x;
+        let y;
+
+        for(let i = 0; i < sections; i++) {
+            x = ((((1-t)**3)*pt0.x) + 3*((1-t)**2)*t*pt1.x + ((3*(1-t))*t**2)*pt2.x + ((t**3)*pt3.x));
+            y = ((((1-t)**3)*pt0.y) + 3*((1-t)**2)*t*pt1.y + ((3*(1-t))*t**2)*pt2.y + ((t**3)*pt3.y));
+        }
+
+        if(this.showPoints) {
+        }
+        */
     }
 
     // pt0:          object ({x: __, y: __})
@@ -119,8 +155,8 @@ class Renderer {
     // ctx:          canvas context
     showPointData(pt0, color, ctx) {
         this.drawLine({x: pt0.x-5, y: pt0.y+5}, {x: pt0.x-5, y: pt0.y-5}, color, ctx); // left
-        //this.drawLine(pt0, pt0, color, ctx);
-        //this.drawLine(pt0, pt0, color, ctx);
-        //this.drawLine(pt0, pt0, color, ctx);
+        this.drawLine({x: pt0.x-5, y: pt0.y-5}, {x: pt0.x+5, y: pt0.y-5}, color, ctx); // bottom
+        this.drawLine({x: pt0.x+5, y: pt0.y-5}, {x: pt0.x+5, y: pt0.y+5}, color, ctx); // right
+        this.drawLine({x: pt0.x+5, y: pt0.y+5}, {x: pt0.x-5, y: pt0.y+5}, color, ctx); // top
     }
 };
