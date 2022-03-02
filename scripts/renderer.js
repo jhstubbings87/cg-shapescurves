@@ -51,7 +51,7 @@ class Renderer {
 
     // ctx:          canvas context
     drawSlide1(ctx) {
-        this.drawCircle({x: 350, y: 350}, 150, [0, 255, 0, 255], ctx);
+        this.drawCircle({x: 400, y: 350}, 150, [0, 255, 0, 255], ctx);
     }
 
     // ctx:          canvas context
