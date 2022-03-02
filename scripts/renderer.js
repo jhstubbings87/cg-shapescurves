@@ -46,7 +46,7 @@ class Renderer {
 
     // ctx:          canvas context
     drawSlide0(ctx) {
-        this.drawRectangle({x: 200, y: 200}, {x: 500, y: 500}, [0, 0, 255, 255], ctx);
+        this.drawRectangle({x: 300, y: 200}, {x: 500, y: 500}, [0, 215, 210, 255], ctx);
     }
 
     // ctx:          canvas context
@@ -56,12 +56,29 @@ class Renderer {
 
     // ctx:          canvas context
     drawSlide2(ctx) {
-
+        this.drawBezierCurve({x: 300, y: 200}, {x: 250, y: 350}, {x: 600, y: 250}, {x: 400, y: 500}, [255, 128, 0, 255], ctx);
     }
 
     // ctx:          canvas context
     drawSlide3(ctx) {
+        let color = [148, 43, 226, 255]; //blueviolet
+        let points = [{x: 400, y: 470}, {x: 400, y: 350}, {x: 275, y: 350}, {x: 525, y: 350}, 
+            {x: 425, y: 350}, {x: 550, y: 265}];
 
+        this.drawLine(points[0], points[1], color, ctx); // stroke 1 - verticle
+        this.drawCircle({x: 338, y: 400}, 20, color, ctx); // stroke 2 - circle 1
+        this.drawCircle({x: 463, y: 400}, 20, color, ctx); // stroke 3 - circle 2
+        this.drawLine(points[2], points[3], color, ctx); // stroke 4 - horizontal
+        this.drawBezierCurve({x: 375, y: 350}, {x: 380, y: 260}, {x: 300, y: 225}, {x: 270, y: 220}, color, ctx); // stroke 5 - left curve
+        this.drawLine(points[4], {x: 425, y: 270}, color, ctx); //stroke 6.1 - right curve 1 - verticle
+        this.drawBezierCurve({x: 425, y: 270}, {x: 425, y: 215}, {x: 450, y: 230}, {x: 550, y: 230}, color, ctx); //stroke 6.2 - right curve 2 - curve
+        this.drawLine({x: 550, y: 230}, points[5], color, ctx); //stoke 6.3  - right curve 3 - verticle
+
+        if(this.show_points) {
+            for(let i = 0; i < points.length; i++) {
+                this.showPointData(points[i], [255, 0, 0, 255], ctx);
+            }
+        }
     }
 
     // left_bottom:  object ({x: __, y: __})
@@ -94,14 +111,14 @@ class Renderer {
         let angle = (2*Math.PI) / sections;
         let newAngle = 0;
         let points = [];
-        let X;
-        let Y;
+        let newX;
+        let newY;
         
         for(let i = 0; i <= sections; i++) {
-            X = center.x + (radius * Math.cos(newAngle));
-            Y = center.y + (radius * Math.sin(newAngle));
+            newX = center.x + (radius * Math.cos(newAngle));
+            newY = center.y + (radius * Math.sin(newAngle));
 
-            points[i] = {x: X, y: Y};
+            points[i] = {x: newX, y: newY};
 
             newAngle = newAngle + angle;
         }
@@ -124,19 +141,31 @@ class Renderer {
     // color:        array of int [R, G, B, A]
     // ctx:          canvas context
     drawBezierCurve(pt0, pt1, pt2, pt3, color, ctx) {
-        /*
-        let sections = ctx.num_curve_sections;
-        let x;
-        let y;
+        let points = [];
+        let sections = 1/this.num_curve_sections;
+        let i = 0;
+        let newX;
+        let newY;
 
-        for(let i = 0; i < sections; i++) {
-            x = ((((1-t)**3)*pt0.x) + 3*((1-t)**2)*t*pt1.x + ((3*(1-t))*t**2)*pt2.x + ((t**3)*pt3.x));
-            y = ((((1-t)**3)*pt0.y) + 3*((1-t)**2)*t*pt1.y + ((3*(1-t))*t**2)*pt2.y + ((t**3)*pt3.y));
+        for(let t = 0; t <= 1.01; t+=sections) {
+            newX = ((((1-t)**3)*pt0.x) + 3*((1-t)**2)*t*pt1.x + ((3*(1-t))*t**2)*pt2.x + ((t**3)*pt3.x));
+            newY = ((((1-t)**3)*pt0.y) + 3*((1-t)**2)*t*pt1.y + ((3*(1-t))*t**2)*pt2.y + ((t**3)*pt3.y));
+
+            points[i] = {x: newX, y: newY};
+            i++;
         }
 
-        if(this.showPoints) {
+        for(let j = 0; j < points.length-1; j++) {
+            this.drawLine(points[j], points[j+1], color, ctx);
         }
-        */
+
+        if(this.show_points) {
+            for(let j = 0; j < points.length; j++) {
+                this.showPointData(points[j], [255, 0, 0, 255], ctx);
+            }
+                this.showPointData(pt1, [0, 0, 255, 255], ctx)
+                this.showPointData(pt2, [0, 0, 255, 255], ctx)
+        }
     }
 
     // pt0:          object ({x: __, y: __})
@@ -156,9 +185,16 @@ class Renderer {
     // color:        array of int [R, G, B, A]
     // ctx:          canvas context
     showPointData(pt0, color, ctx) {
-        this.drawLine({x: pt0.x-5, y: pt0.y+5}, {x: pt0.x-5, y: pt0.y-5}, color, ctx); // left
-        this.drawLine({x: pt0.x-5, y: pt0.y-5}, {x: pt0.x+5, y: pt0.y-5}, color, ctx); // bottom
-        this.drawLine({x: pt0.x+5, y: pt0.y-5}, {x: pt0.x+5, y: pt0.y+5}, color, ctx); // right
-        this.drawLine({x: pt0.x+5, y: pt0.y+5}, {x: pt0.x-5, y: pt0.y+5}, color, ctx); // top
+        this.drawLine({x: pt0.x-3, y: pt0.y+3}, {x: pt0.x-3, y: pt0.y-3}, color, ctx); // left
+        this.drawLine({x: pt0.x-3, y: pt0.y-3}, {x: pt0.x+3, y: pt0.y-3}, color, ctx); // bottom
+        this.drawLine({x: pt0.x+3, y: pt0.y-3}, {x: pt0.x+3, y: pt0.y+3}, color, ctx); // right
+        this.drawLine({x: pt0.x+3, y: pt0.y+3}, {x: pt0.x-3, y: pt0.y+3}, color, ctx); // top
+    }
+
+    // pt0:          object ({x: __, y: __})
+    // color:        array of int [R, G, B, A]
+    // ctx:          canvas context
+    showPointDataForBezier(pt0, color, ctx) {
+        
     }
 };
